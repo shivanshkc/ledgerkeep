@@ -1,0 +1,90 @@
+name: Deploy
+description: Deploys the project.
+
+inputs:
+  service-account-email:
+    description: Email of the concerned service account.
+    required: true
+  service-account-key:
+    description: Service account key in JSON format.
+    required: true
+
+  project-id:
+    description: GCP project ID.
+    required: true
+  region:
+    description: GCP region.
+    required: true
+  repository:
+    description: Name of the container repository.
+    required: true
+  service:
+    description: Name of the service.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # Authenticating with Google Cloud.
+    - name: Authenticating with Google Cloud.
+      uses: google-github-actions/auth@v0
+      with:
+        credentials_json: ${{ inputs.service-account-key }}
+
+    # Setting up Google Cloud CLI.
+    - name: Setting up Google Cloud CLI.
+      uses: google-github-actions/setup-gcloud@v0
+
+    # Google Cloud CLI info.
+    - name: Google Cloud CLI info.
+      run: gcloud info
+      shell: bash
+
+    # Configuring docker with credentials.
+    - name: Configuring docker with credentials.
+      run: gcloud auth configure-docker ${{ inputs.region }}-docker.pkg.dev
+      shell: bash
+
+    # Building the docker image.
+    - name: Building the docker image.
+      run: make image
+      shell: bash
+
+    # Pushing the docker image.
+    - name: Pushing the docker image.
+      run: |
+        docker tag ${{ inputs.service }}:latest \
+          ${{ inputs.region }}-docker.pkg.dev/${{ inputs.project-id }}/${{ inputs.repository }}/${{ inputs.service }}:latest
+
+        docker push \
+          ${{ inputs.region }}-docker.pkg.dev/${{ inputs.project-id }}/${{ inputs.repository }}/${{ inputs.service }}:latest
+      shell: bash
+
+    # Deploying to cloud run.
+    - name: Deploying to cloud run.
+      run: |
+        echo "Using region:${{ inputs.region }}"
+
+        gcloud run deploy ${{ inputs.service }} \
+          --concurrency=80 \
+          --max-instances=1 \
+          --min-instances=1 \
+          --memory=128Mi \
+          --platform=managed \
+          --port=8080 \
+          --service-account=${{ inputs.service-account-email }} \
+          --timeout=600 \
+          --set-secrets=/etc/ledgerkeep/configs.yaml=ledgerkeep-configs:latest \
+          --image=${{ inputs.region }}-docker.pkg.dev/${{ inputs.project-id }}/${{ inputs.repository }}/${{ inputs.service }}:latest \
+          --cpu-throttling \
+          --region=${{ inputs.region }}
+      shell: bash
+
+    # Allowing public access.
+    - name: Allowing public access.
+      run: |
+        gcloud run services add-iam-policy-binding ${{ inputs.service }} \
+          --region=${{ inputs.region }} \
+          --member=allUsers \
+          --role=roles/run.invoker
+      shell: bash

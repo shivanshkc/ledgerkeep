@@ -1,0 +1,19 @@
+---
+application:
+  name: ledgerkeep
+  version: 0.1.0
+
+auth:
+  username: user
+  password: pass
+
+http_server:
+  addr: 0.0.0.0:8080
+
+logger:
+  level: info
+
+mongo:
+  addr: mongodb://dev:dev@localhost:27017/?retryWrites=true&w=majority
+  database_name: ledgerkeep
+  operation_timeout_sec: 60
