@@ -3,23 +3,31 @@ description: Deploys the project.
 
 inputs:
   service-account-email:
-    description: Email of the concerned service account.
+    description: |
+      Email of the service account that manages the involved cloud operations.
+      Required to explicitly set the service account for the Cloud Run service.
     required: true
   service-account-key:
-    description: Service account key in JSON format.
+    description: |
+      JSON formatted key for the service account.
+      This can be obtained from the GCP console IAM page.
     required: true
 
   project-id:
-    description: GCP project ID.
+    description: |
+      Project ID under which the deployment is intended to happen.
     required: true
   region:
-    description: GCP region.
+    description: |
+      Region for the deployment.
     required: true
   repository:
-    description: Name of the container repository.
+    description: |
+      Name of the repository (GCP Artifacts Registry) where the docker image is present.
     required: true
   service:
-    description: Name of the service.
+    description: |
+      Name of the service that will be displayed in Cloud Run.
     required: true
 
 runs:
@@ -60,11 +68,9 @@ runs:
           ${{ inputs.region }}-docker.pkg.dev/${{ inputs.project-id }}/${{ inputs.repository }}/${{ inputs.service }}:latest
       shell: bash
 
-    # Deploying to cloud run.
+    # Deploying to cloud run with all the custom, cost-effective options.
     - name: Deploying to cloud run.
       run: |
-        echo "Using region:${{ inputs.region }}"
-
         gcloud run deploy ${{ inputs.service }} \
           --concurrency=80 \
           --max-instances=1 \
@@ -80,7 +86,7 @@ runs:
           --region=${{ inputs.region }}
       shell: bash
 
-    # Allowing public access.
+    # Allowing public access. Remove this step if public access is not intended.
     - name: Allowing public access.
       run: |
         gcloud run services add-iam-policy-binding ${{ inputs.service }} \
