@@ -55,7 +55,7 @@ runs:
 
     # Building the docker image.
     - name: Building the docker image.
-      run: make image
+      run: docker build -t ${{ inputs.service }}:latest .
       shell: bash
 
     # Pushing the docker image.
