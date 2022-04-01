@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/shivanshkc/ledgerkeep/compare/v1.0.0...v1.0.1) (2022-04-01)
+
+
+### Bug Fixes
+
+* **ci:** set cloud run min-instanc count to zero ([6694b68](https://github.com/shivanshkc/ledgerkeep/commit/6694b68fb2aba1923f35663a9f0b292fa50a5844))
+
 # 1.0.0 (2022-03-16)
 
 
