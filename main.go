@@ -85,10 +85,27 @@ func getHandler() http.Handler {
 	router.HandleFunc("/api/transactions/{transaction_id}", handlers.DeleteTransactionHandler).
 		Methods(http.MethodDelete, http.MethodOptions)
 
+	router.HandleFunc("/api/tags", handlers.CreateTagHandler).
+		Methods(http.MethodPost, http.MethodOptions)
+
+	router.HandleFunc("/api/tags", handlers.ListTagsHandler).
+		Methods(http.MethodGet, http.MethodOptions)
+
+	router.HandleFunc("/api/tags/{tag_id}", handlers.UpdateTagHandler).
+		Methods(http.MethodPatch, http.MethodOptions)
+
+	router.HandleFunc("/api/tags/{tag_id}", handlers.DeleteTagHandler).
+		Methods(http.MethodDelete, http.MethodOptions)
+
+	// TODO: Rename to balances by category.
 	router.HandleFunc("/api/stats/budget", handlers.GetStatsBudgetHandler).
 		Methods(http.MethodGet, http.MethodOptions)
 
+	// TODO: Rename to balances by time.
 	router.HandleFunc("/api/stats/balances", handlers.GetStatsBalancesHandler).
+		Methods(http.MethodGet, http.MethodOptions)
+
+	router.HandleFunc("/api/balances/by_tags", handlers.GetBalancesByTagsHandler).
 		Methods(http.MethodGet, http.MethodOptions)
 
 	return router
