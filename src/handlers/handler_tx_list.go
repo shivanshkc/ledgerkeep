@@ -40,7 +40,7 @@ func ListTransactionsHandler(writer http.ResponseWriter, request *http.Request) 
 	filter := msi{}
 
 	// Validating the amount values and creating the amount filter.
-	amountFilter, err := getStartEndAmountFilter(qValues.StartAmount, qValues.EndAmount)
+	amountFilter, err := getTxAmountFilter(qValues.StartAmount, qValues.EndAmount)
 	if err != nil {
 		err = errutils.BadRequest().AddErrors(err)
 		httputils.WriteErrAndLog(ctx, writer, err, log)
@@ -52,7 +52,7 @@ func ListTransactionsHandler(writer http.ResponseWriter, request *http.Request) 
 	}
 
 	// Validating the timestamp values and creating the timestamp filter.
-	timestampFilter, err := getStartEndTimestampFilter(qValues.StartTime, qValues.EndTime)
+	timestampFilter, err := getTxTimestampFilter(qValues.StartTime, qValues.EndTime)
 	if err != nil {
 		err = errutils.BadRequest().AddErrors(err)
 		httputils.WriteErrAndLog(ctx, writer, err, log)

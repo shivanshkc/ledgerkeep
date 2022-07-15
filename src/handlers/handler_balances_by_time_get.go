@@ -10,8 +10,10 @@ import (
 	"github.com/shivanshkc/ledgerkeep/src/utils/httputils"
 )
 
-// GetStatsBalancesHandler serves the info about how total balance has varied over time.
-func GetStatsBalancesHandler(writer http.ResponseWriter, request *http.Request) {
+// GetBalancesByTimeHandler provides the balances grouped by time.
+//
+// It helps show how the total balance has varied over time.
+func GetBalancesByTimeHandler(writer http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 	log := logger.Get()
 

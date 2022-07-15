@@ -11,22 +11,24 @@ import (
 	"github.com/shivanshkc/ledgerkeep/src/utils/httputils"
 )
 
-// getBudgetQuery are the query parameters for the GetBudget API.
-type getBudgetQuery struct {
+// getBalByCatQuery are the query parameters for the Get Balances by Category API.
+type getBalByCatQuery struct {
 	StartTime *string
 	EndTime   *string
 }
 
-// GetStatsBudgetHandler serves all the budget information.
-func GetStatsBudgetHandler(writer http.ResponseWriter, request *http.Request) {
+// GetBalancesByCategoryHandler provides the balances grouped by categories.
+//
+// It helps show how much expenditure is happening in each category.
+func GetBalancesByCategoryHandler(writer http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 	log := logger.Get()
 
-	qValues := readGetBudgetQuery(request.URL.Query())
+	qValues := readGetBalByCatQuery(request.URL.Query())
 	filter := msi{}
 
 	// Validating the timestamp values and creating the timestamp filter.
-	timestampFilter, err := getStartEndTimestampBudgetFilter(qValues.StartTime, qValues.EndTime)
+	timestampFilter, err := getBudgetTimestampFilter(qValues.StartTime, qValues.EndTime)
 	if err != nil {
 		err = errutils.BadRequest().AddErrors(err)
 		httputils.WriteErrAndLog(ctx, writer, err, log)
@@ -100,7 +102,7 @@ func GetStatsBudgetHandler(writer http.ResponseWriter, request *http.Request) {
 		Status: http.StatusOK,
 		Body: &httputils.ResponseBodyDTO{
 			StatusCode: http.StatusOK,
-			CustomCode: "BUDGET_FETCHED",
+			CustomCode: "BALANCES_FETCHED",
 			Data:       budget,
 		},
 	}

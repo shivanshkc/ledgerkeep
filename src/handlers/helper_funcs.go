@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
@@ -172,8 +173,8 @@ func readListTransactionsQuery(values url.Values) *listTransactionsQuery {
 	return qValues
 }
 
-// getStartEndAmountFilter creates a MongoDB style filter for start and end amount of a transaction.
-func getStartEndAmountFilter(startAmount *string, endAmount *string) (msi, error) {
+// getTxAmountFilter creates a MongoDB style filter for start and end amount of a transaction.
+func getTxAmountFilter(startAmount *string, endAmount *string) (msi, error) {
 	filter := msi{}
 
 	if startAmount != nil && *startAmount != "" {
@@ -194,19 +195,19 @@ func getStartEndAmountFilter(startAmount *string, endAmount *string) (msi, error
 	return filter, nil
 }
 
-// getStartEndTimestampFilter creates a MongoDB style filter for start and end timestamps of a transaction.
-func getStartEndTimestampFilter(startTime *string, endTime *string) (msi, error) {
+// getTxTimestampFilter creates a MongoDB style filter for start and end timestamps of a transaction.
+func getTxTimestampFilter(startTime *string, endTime *string) (msi, error) {
 	filter := msi{}
 
 	if startTime != nil && *startTime != "" {
-		txTimestamp, err := parseTransactionTimestampString(*startTime)
+		txTimestamp, err := thisOrCurrentTime(*startTime)
 		if err != nil {
 			return nil, errInvalidTxTimestamp
 		}
 		filter["$gte"] = txTimestamp
 	}
 	if endTime != nil && *endTime != "" {
-		txTimestamp, err := parseTransactionTimestampString(*endTime)
+		txTimestamp, err := thisOrCurrentTime(*endTime)
 		if err != nil {
 			return nil, errInvalidTxTimestamp
 		}
@@ -277,22 +278,6 @@ func parseTransactionSortFieldAndOrder(sortField *string, sortOrder *string) (st
 	return parsedSortField, parsedSortOrder, nil
 }
 
-// parseTransactionTimestampString parses the user provided timestamp string for a transaction.
-// The timestamp is allowed to be empty, in which case current time will be used.
-// It returns the error as the second value if any.
-func parseTransactionTimestampString(timestamp string) (int64, error) {
-	if timestamp == "" {
-		return time.Now().Unix(), nil
-	}
-
-	timestampInt, err := strconv.ParseInt(timestamp, 10, 64)
-	if err != nil {
-		return 0, errInvalidTxTimestamp
-	}
-
-	return timestampInt, nil
-}
-
 // getAllowedCategoriesForTxAmount provides the list of allowed categories of the specified transaction amount.
 func getAllowedCategoriesForTxAmount(amount float64) []string {
 	if amount > 0 {
@@ -312,9 +297,9 @@ func stringPresentCaseInsensitive(value string, others []string) bool {
 	return false
 }
 
-// readGetBudgetQuery reads the request query values and loads them into *getBudgetQuery type.
-func readGetBudgetQuery(values url.Values) *getBudgetQuery {
-	qValues := &getBudgetQuery{}
+// readGetBalByCatQuery reads the request query values and loads them into *getBalByCatQuery type.
+func readGetBalByCatQuery(values url.Values) *getBalByCatQuery {
+	qValues := &getBalByCatQuery{}
 
 	if values.Has("start_time") {
 		startTime := values.Get("start_time")
@@ -329,19 +314,19 @@ func readGetBudgetQuery(values url.Values) *getBudgetQuery {
 	return qValues
 }
 
-// getStartEndTimestampBudgetFilter creates a MongoDB style filter for start and end timestamps of a Budget.
-func getStartEndTimestampBudgetFilter(startTime *string, endTime *string) (msi, error) {
+// getBudgetTimestampFilter creates a MongoDB style filter for start and end timestamps of a Budget.
+func getBudgetTimestampFilter(startTime *string, endTime *string) (msi, error) {
 	filter := msi{}
 
 	if startTime != nil && *startTime != "" {
-		timestamp, err := parseBudgetStartTime(*startTime)
+		timestamp, err := thisOrZeroTime(*startTime)
 		if err != nil {
 			return nil, errInvalidBudgetTimestamp
 		}
 		filter["$gte"] = timestamp
 	}
 	if endTime != nil && *endTime != "" {
-		timestamp, err := parseBudgetEndTime(*endTime)
+		timestamp, err := thisOrCurrentTime(*endTime)
 		if err != nil {
 			return nil, errInvalidBudgetTimestamp
 		}
@@ -351,35 +336,35 @@ func getStartEndTimestampBudgetFilter(startTime *string, endTime *string) (msi, 
 	return filter, nil
 }
 
-// parseBudgetStartTime parses the start time of the budget period.
-// The time is allowed to be empty, in which case zero time will be used.
-// It returns the error as the second value if any.
-func parseBudgetStartTime(startTime string) (int64, error) {
-	// If the startTime is not provided, we take it to be the beginning of time.
-	if startTime == "" {
+// thisOrCurrentTime parses the provided time and returns it.
+//
+// If the provided time is empty, it returns the zero time.
+func thisOrZeroTime(timeStr string) (int64, error) {
+	// If the timeStr is not provided, we take it to be the beginning of time.
+	if timeStr == "" {
 		return 0, nil
 	}
 
-	timestampInt, err := strconv.ParseInt(startTime, 10, 64)
+	timestampInt, err := strconv.ParseInt(timeStr, 10, 64)
 	if err != nil {
-		return 0, errInvalidBudgetTimestamp
+		return 0, fmt.Errorf("error in strconv.ParseInt call: %w", err)
 	}
 
 	return timestampInt, nil
 }
 
-// parseBudgetEndTime parses the end time of the budget period.
-// The time is allowed to be empty, in which case the end of the current month will be used.
-// It returns the error as the second value if any.
-func parseBudgetEndTime(endTime string) (int64, error) {
-	// If the endTime is not provided, we take it to be the current time.
-	if endTime == "" {
+// thisOrCurrentTime parses the provided time and returns it.
+//
+// If the provided time is empty, it returns the current time.
+func thisOrCurrentTime(timeStr string) (int64, error) {
+	// If the timeStr is not provided, we take it to be the current time.
+	if timeStr == "" {
 		return time.Now().Unix(), nil
 	}
 
-	timestampInt, err := strconv.ParseInt(endTime, 10, 64)
+	timestampInt, err := strconv.ParseInt(timeStr, 10, 64)
 	if err != nil {
-		return 0, errInvalidBudgetTimestamp
+		return 0, fmt.Errorf("error in strconv.ParseInt call: %w", err)
 	}
 
 	return timestampInt, nil
