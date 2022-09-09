@@ -36,6 +36,7 @@ func prepareNewTransaction(body *createTransactionBody) (*models.TransactionDTO,
 		Timestamp: body.Timestamp,
 		AccountID: body.AccountID,
 		Category:  strings.ToLower(body.Category),
+		Tags:      body.Tags,
 		Notes:     body.Notes,
 	}, nil
 }

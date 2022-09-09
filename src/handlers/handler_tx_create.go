@@ -11,11 +11,12 @@ import (
 
 // createTransactionBody is the schema of the body of the CreateTransaction API.
 type createTransactionBody struct {
-	Amount    float64 `json:"amount"`
-	Timestamp int64   `json:"timestamp"`
-	AccountID string  `json:"account_id"`
-	Category  string  `json:"category"`
-	Notes     string  `json:"notes"`
+	Amount    float64  `json:"amount"`
+	Timestamp int64    `json:"timestamp"`
+	AccountID string   `json:"account_id"`
+	Category  string   `json:"category"`
+	Tags      []string `json:"tags"`
+	Notes     string   `json:"notes"`
 }
 
 // CreateTransactionHandler creates a new transaction in the system.
@@ -49,6 +50,8 @@ func CreateTransactionHandler(writer http.ResponseWriter, request *http.Request)
 		httputils.WriteErrAndLog(ctx, writer, errutils.AccountNotFound(), log)
 		return
 	}
+
+	// TODO: Check if all the tags exist.
 
 	// Database call.
 	insertedID, err := database.InsertTransaction(ctx, transaction)

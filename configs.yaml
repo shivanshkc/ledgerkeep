@@ -4,8 +4,8 @@ application:
   version: 0.1.0
 
 auth:
-  username: user
-  password: pass
+  username: dev
+  password: dev
 
 http_server:
   addr: 0.0.0.0:8080

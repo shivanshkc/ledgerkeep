@@ -20,6 +20,8 @@ type TransactionDTO struct {
 	AccountID string `bson:"account_id" json:"account_id"`
 	// Category is one of the waterfall categories.
 	Category string `bson:"category" json:"category"`
+	// Tags is the list of tags on this transaction.
+	Tags []string `bson:"tags" json:"tags"`
 	// Notes are any details about the transaction.
 	Notes string `bson:"notes" json:"notes"`
 
