@@ -58,10 +58,10 @@ type ParamsTransactionCreate struct {
 
 	// Amount of the transaction.
 	Amount float64
+	// AmountPerCategory for the transaction.
+	AmountPerCategory *AmountPerCategory
 	// Timestamp is the time of occurrence for this transaction.
 	Timestamp *int64
-	// Category of the transaction.
-	Category string
 	// Tags of the transaction.
 	Tags []string
 	// Notes are any additional details about the transaction.
@@ -79,10 +79,10 @@ type ParamsTransactionUpdate struct {
 	AccountID *string
 	// Amount will be the new amount of the transaction. It is optional.
 	Amount *float64
+	// AmountPerCategory will be the new amount distribution for the transaction.
+	AmountPerCategory *AmountPerCategory
 	// Timestamp will be the new timestamp of the transaction. It is optional.
 	Timestamp *int64
-	// Category will be the new category of the transaction. It is optional.
-	Category *string
 	// Tags will be the new tags of the transaction. It is optional.
 	Tags []string
 	// Notes will be the new notes of the transaction. It is optional.
