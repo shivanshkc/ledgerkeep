@@ -11,7 +11,7 @@ type AccountManager interface {
 	// Update an existing account.
 	Update(ctx context.Context, params *ParamsAccountUpdate) (err error)
 	// Delete an account.
-	Delete(ctx context.Context, accountID string) (err error)
+	Delete(ctx context.Context, params *ParamsAccountDelete) (err error)
 	// List accounts with filters.
 	List(ctx context.Context, params *ParamsAccountList) (accounts []*AccountDoc, err error)
 }
@@ -27,7 +27,7 @@ type TransactionManager interface {
 	// Get a single transaction.
 	Get(ctx context.Context, params *ParamsTransactionGet) (transaction *TransactionDoc, err error)
 	// List transactions with filters.
-	List(ctx context.Context) (transactions []*TransactionDoc, err error)
+	List(ctx context.Context, params *ParamsTransactionList) (transactions []*TransactionDoc, err error)
 }
 
 // StatisticsManager encapsulates all methods required to show statistics.
