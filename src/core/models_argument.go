@@ -143,3 +143,14 @@ type ParamsTransactionList struct {
 	// SortOrder is the order of sorting. asc or desc.
 	SortOrder *string
 }
+
+// ParamsStatsGetAmountDistribution are the params required to get the debit or credit distribution by category or tags.
+type ParamsStatsGetAmountDistribution struct {
+	// UserID is the identifier of the user who is performing this operation.
+	UserID string
+
+	// StartTime can be used to only consider transactions that occurred after the specified time.
+	StartTime *int64
+	// EndTime can be used to only consider transactions that occurred before the specified time.
+	EndTime *int64
+}
