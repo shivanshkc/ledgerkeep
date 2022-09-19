@@ -7,10 +7,11 @@ type AccountDoc struct {
 	// UserID is the identifier of the user to which this account belongs.
 	UserID string `json:"user_id" bson:"user_id"`
 
+	// AccountName is the easily rememberable name of this account.
+	// It is unique for every account.
+	AccountName string `json:"account_name" bson:"account_name"`
 	// AccountNumber can be used to store the bank account number.
 	AccountNumber string `json:"account_number" bson:"account_number"`
-	// AccountName is the easily rememberable name of this account.
-	AccountName string `json:"account_name" bson:"account_name"`
 
 	// DocCreatedAt is the time of creation of this document in the database.
 	DocCreatedAt int64 `json:"doc_created_at" bson:"doc_created_at"`

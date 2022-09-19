@@ -37,10 +37,10 @@ type StatisticsManager interface {
 
 	// GetDebitPerCategory shows how much expenditure has been done over each debit category.
 	GetDebitPerCategory(ctx context.Context, params *ParamsStatsGetAmountDistribution) (
-		apc *AmountPerCategory, err error)
+		apc map[string]float64, err error)
 	// GetCreditPerCategory shows how much income has been gained from each credit category.
 	GetCreditPerCategory(ctx context.Context, params *ParamsStatsGetAmountDistribution) (
-		apc *AmountPerCategory, err error)
+		apc map[string]float64, err error)
 
 	// GetDebitPerTag shows how much expenditure has been done over each tag.
 	GetDebitPerTag(ctx context.Context, params *ParamsStatsGetAmountDistribution) (apt map[string]float64, err error)
@@ -48,5 +48,5 @@ type StatisticsManager interface {
 	GetCreditPerTag(ctx context.Context, params *ParamsStatsGetAmountDistribution) (apt map[string]float64, err error)
 
 	// GetBalanceOverTime shows how the total balance has varied over time.
-	GetBalanceOverTime(ctx context.Context) (bot map[int]float64, err error)
+	GetBalanceOverTime(ctx context.Context) (bot map[int64]float64, err error)
 }

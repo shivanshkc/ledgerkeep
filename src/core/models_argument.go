@@ -5,10 +5,10 @@ type ParamsAccountCreate struct {
 	// UserID is the identifier of the user who is performing this operation.
 	UserID string
 
-	// AccountNumber for the account.
-	AccountNumber string
 	// AccountName for the account.
 	AccountName string
+	// AccountNumber for the account.
+	AccountNumber string
 }
 
 // ParamsAccountUpdate are the params required to update an account.
@@ -18,10 +18,10 @@ type ParamsAccountUpdate struct {
 	// AccountID is the identifier of the account that is to be updated.
 	AccountID string
 
-	// AccountNumber is the new value of AccountNumber. It is optional.
-	AccountNumber *string
 	// AccountName is the new value of AccountName. It is optional.
 	AccountName *string
+	// AccountNumber is the new value of AccountNumber. It is optional.
+	AccountNumber *string
 }
 
 // ParamsAccountDelete are params required to delete an account.
@@ -37,7 +37,7 @@ type ParamsAccountList struct {
 	// UserID is the identifier of the user who is performing this operation.
 	UserID string
 
-	// Search through the AccountNumber and AccountName fields. It follows the "similar" search approach.
+	// Search through the AccountName and AccountNumber fields. It follows the "similar" search approach.
 	Search *string
 
 	PaginationLimit *int64
