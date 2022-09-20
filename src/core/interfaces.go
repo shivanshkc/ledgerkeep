@@ -4,6 +4,14 @@ import (
 	"context"
 )
 
+// UserManager encapsulates all methods required to manage users.
+type UserManager interface {
+	// SignIn verifies the username-password combination and returns the user document if verified.
+	SignIn(ctx context.Context, username string, password string) (user *UserDoc, err error)
+	// SignUp creates a new user document from the provided data.
+	SignUp(ctx context.Context, username string, password string) (userID string, err error)
+}
+
 // AccountManager encapsulates all methods required to manage accounts.
 type AccountManager interface {
 	// Create a new account.

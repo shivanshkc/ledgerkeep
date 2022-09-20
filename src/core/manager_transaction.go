@@ -7,11 +7,13 @@ import (
 )
 
 // transactionManager implements the TransactionManager interface.
-type transactionManager struct{}
+type transactionManager struct {
+	collection *mongo.Collection
+}
 
 // NewTransactionManager creates a new instance of the TransactionManager.
-func NewTransactionManager(client *mongo.Client) TransactionManager {
-	return &transactionManager{}
+func NewTransactionManager(collection *mongo.Collection) TransactionManager {
+	return &transactionManager{collection: collection}
 }
 
 func (t *transactionManager) Create(ctx context.Context, params *ParamsTransactionCreate) (string, error) {

@@ -7,11 +7,13 @@ import (
 )
 
 // accountManager implements the AccountManager interface.
-type accountManager struct{}
+type accountManager struct {
+	collection *mongo.Collection
+}
 
 // NewAccountManager creates an instance of the AccountManager.
-func NewAccountManager(client *mongo.Client) AccountManager {
-	return &accountManager{}
+func NewAccountManager(collection *mongo.Collection) AccountManager {
+	return &accountManager{collection: collection}
 }
 
 func (a *accountManager) Create(ctx context.Context, params *ParamsAccountCreate) (string, error) {

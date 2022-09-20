@@ -7,11 +7,13 @@ import (
 )
 
 // statisticsManager implements the StatisticsManager interface.
-type statisticsManager struct{}
+type statisticsManager struct {
+	collection *mongo.Collection
+}
 
 // NewStatisticsManager creates a new instance of the StatisticsManager.
-func NewStatisticsManager(client *mongo.Client) StatisticsManager {
-	return &statisticsManager{}
+func NewStatisticsManager(collection *mongo.Collection) StatisticsManager {
+	return &statisticsManager{collection: collection}
 }
 
 func (s *statisticsManager) GetAverageMonthlyIncome(ctx context.Context, userID string) (float64, error) {

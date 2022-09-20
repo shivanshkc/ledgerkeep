@@ -1,5 +1,21 @@
 package core
 
+// UserDoc is the schema of the user document as stored in the database.
+type UserDoc struct {
+	// UserID is the unique identifier of this user.
+	UserID string `json:"user_id" bson:"_id"`
+
+	// Username is the unique username of this user.
+	Username string `json:"username" bson:"username"`
+	// PasswordHash is the hashed password for verifications.
+	PasswordHash string `json:"password_hash" bson:"password_hash"`
+
+	// DocCreatedAt is the time of creation of this document in the database.
+	DocCreatedAt int64 `json:"doc_created_at" bson:"doc_created_at"`
+	// DocUpdatedAt is the time of last update of this document is the database.
+	DocUpdatedAt int64 `json:"doc_updated_at" bson:"doc_updated_at"`
+}
+
 // AccountDoc is the schema of the account document as stored in the database.
 type AccountDoc struct {
 	// AccountID is the unique identifier of this account.
